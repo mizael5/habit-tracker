@@ -32,11 +32,11 @@ export function ProgressScreen() {
     ? (habits.reduce((sum, h) => sum + h.streak, 0) / habits.length).toFixed(1)
     : '0';
 
-  const recentLog: { date: string; name: string; emoji: string }[] = [];
+  const recentLog: { date: string; name: string; emoji: string; habitId: string }[] = [];
   last30.slice().reverse().forEach((date) => {
     habits.forEach((h) => {
       if (h.completedDates.includes(date)) {
-        recentLog.push({ date, name: h.name, emoji: h.emoji });
+        recentLog.push({ date, name: h.name, emoji: h.emoji, habitId: h.id });
       }
     });
   });
@@ -88,7 +88,7 @@ export function ProgressScreen() {
           <Text style={styles.emptyLog}>Complete habits to see your history here.</Text>
         ) : (
           recentLog.slice(0, 30).map((entry) => (
-            <View key={`${entry.date}-${entry.name}`} style={styles.logRow}>
+            <View key={`${entry.date}-${entry.habitId}`} style={styles.logRow}>
               <Text style={styles.logEmoji}>{entry.emoji}</Text>
               <Text style={styles.logName}>{entry.name}</Text>
               <Text style={styles.logDate}>
