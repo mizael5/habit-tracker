@@ -1,4 +1,4 @@
-import { calculateStreak, migrateHabits } from '../useHabits';
+import { calculateStreak, migrateHabits, isChallengeComplete } from '../useHabits';
 import { Habit } from '../../types';
 
 const fmt = (d: Date) => d.toISOString().split('T')[0];
@@ -67,3 +67,21 @@ describe('migrateHabits', () => {
 // and AsyncStorage. They are integration-tested via the hook — test them manually
 // in the running app after Task 4. Pure logic (migrateHabits, calculateStreak)
 // is unit-tested here.
+
+describe('isChallengeComplete', () => {
+  it('returns true when streak meets challenge goal', () => {
+    expect(isChallengeComplete(7, 7)).toBe(true);
+  });
+
+  it('returns true when streak exceeds challenge goal', () => {
+    expect(isChallengeComplete(10, 7)).toBe(true);
+  });
+
+  it('returns false when streak is below goal', () => {
+    expect(isChallengeComplete(5, 7)).toBe(false);
+  });
+
+  it('returns false when no challenge goal set', () => {
+    expect(isChallengeComplete(5, undefined)).toBe(false);
+  });
+});
