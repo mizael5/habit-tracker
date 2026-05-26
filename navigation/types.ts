@@ -23,3 +23,8 @@ export type SettingsStackParamList = {
 };
 
 export type SettingsScreenProps = NativeStackScreenProps<SettingsStackParamList, 'SettingsScreen'>;
+
+export type OnboardingStackParamList = {
+  Welcome: undefined;
+  FirstHabit: { userName: string };
+};
