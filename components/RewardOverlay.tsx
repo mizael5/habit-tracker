@@ -1,7 +1,7 @@
 // components/RewardOverlay.tsx
 import React, { useEffect, useRef } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet,
+  Text, TouchableOpacity, StyleSheet,
   Animated, Dimensions, Modal,
 } from 'react-native';
 import ConfettiCannon from 'react-native-confetti-cannon';
