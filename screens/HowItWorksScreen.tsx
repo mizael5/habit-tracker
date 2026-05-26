@@ -8,7 +8,7 @@ const SECTIONS: Section[] = [
   {
     title: 'Daily habits',
     icon: '✓',
-    body: 'Binary habits are things you do once a day — like meditating or journaling. Tap the circle to mark it done. Undo it if you tap by mistake.',
+    body: 'Daily habits are things you do once a day—like meditating or writing in a journal. Tap the circle to mark it as completed. Undo if you tap by mistake.',
   },
   {
     title: 'Count-Based Habits',
