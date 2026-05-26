@@ -47,9 +47,9 @@ export function buildEveningContent(
   return { title: 'Habit Tracker', body };
 }
 
-export function buildScheduleTrigger(timeStr: string) {
+export function buildScheduleTrigger(timeStr: string): Notifications.CalendarTriggerInput {
   const [h, m] = timeStr.split(':').map(Number);
-  return { hour: h, minute: m, repeats: true };
+  return { type: Notifications.SchedulableTriggerInputTypes.CALENDAR, hour: h, minute: m, repeats: true };
 }
 
 // Async helpers

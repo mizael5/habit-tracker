@@ -37,11 +37,11 @@ describe('buildEveningContent', () => {
 describe('buildScheduleTrigger', () => {
   it('returns hour and minute from a time string', () => {
     const trigger = buildScheduleTrigger('08:30');
-    expect(trigger).toEqual({ hour: 8, minute: 30, repeats: true });
+    expect(trigger).toMatchObject({ hour: 8, minute: 30, repeats: true });
   });
 
   it('handles single-digit hours', () => {
     const trigger = buildScheduleTrigger('07:05');
-    expect(trigger).toEqual({ hour: 7, minute: 5, repeats: true });
+    expect(trigger).toMatchObject({ hour: 7, minute: 5, repeats: true });
   });
 });
