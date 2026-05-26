@@ -31,7 +31,7 @@ export function AddHabitScreen({ route, navigation }: AddHabitScreenProps) {
 
   const handleDelete = () => {
     deleteHabit(habitId!);
-    navigation.goBack();
+    navigation.popToTop();
   };
 
   const handleSave = () => {

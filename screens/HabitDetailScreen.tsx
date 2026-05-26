@@ -1,9 +1,10 @@
 // screens/HabitDetailScreen.tsx
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity,
   StyleSheet, TextInput,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { StreakCalendar } from '../components/StreakCalendar';
 import { useHabits } from '../hooks/useHabits';
 import { HabitDetailScreenProps } from '../navigation/types';
@@ -12,7 +13,8 @@ const PRESET_GOALS = [7, 14, 21, 30, 66];
 
 export function HabitDetailScreen({ route, navigation }: HabitDetailScreenProps) {
   const { habitId } = route.params;
-  const { habits, setChallengeGoal, clearChallenge } = useHabits();
+  const { habits, setChallengeGoal, clearChallenge, reload } = useHabits();
+  useFocusEffect(useCallback(() => { reload(); }, []));
   const habit = habits.find((h) => h.id === habitId);
   const [customDays, setCustomDays] = useState('');
 
@@ -53,7 +55,7 @@ export function HabitDetailScreen({ route, navigation }: HabitDetailScreenProps)
           <Text style={styles.streak}>🔥 {habit.streak}-day streak</Text>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('AddHabit', { habitId })}>
-          <Text style={styles.editLink}>Edit</Text>
+          <Text style={styles.editLink}>Edit / Delete</Text>
         </TouchableOpacity>
       </View>
 
