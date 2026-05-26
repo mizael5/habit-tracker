@@ -87,8 +87,8 @@ export function ProgressScreen() {
         {recentLog.length === 0 ? (
           <Text style={styles.emptyLog}>Complete habits to see your history here.</Text>
         ) : (
-          recentLog.slice(0, 30).map((entry, i) => (
-            <View key={i} style={styles.logRow}>
+          recentLog.slice(0, 30).map((entry) => (
+            <View key={`${entry.date}-${entry.name}`} style={styles.logRow}>
               <Text style={styles.logEmoji}>{entry.emoji}</Text>
               <Text style={styles.logName}>{entry.name}</Text>
               <Text style={styles.logDate}>
