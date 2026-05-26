@@ -14,8 +14,8 @@ export function RootNavigator() {
     const interval = setInterval(async () => {
       const v = await AsyncStorage.getItem('onboarded');
       if (v === 'true') {
-        setOnboarded(true);
         clearInterval(interval);
+        setOnboarded(true);
       }
     }, 500);
     return () => clearInterval(interval);
