@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text } from 'react-native';
 import { TodayStack } from './TodayStack';
 import { ProgressScreen } from '../screens/ProgressScreen';
-import { SettingsScreen } from '../screens/SettingsScreen';
+import { SettingsStack } from './SettingsStack';
 import { TabParamList } from './types';
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -30,7 +30,7 @@ export function TabNavigator() {
       />
       <Tab.Screen
         name="Settings"
-        component={SettingsScreen}
+        component={SettingsStack}
         options={{ tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 20 }}>⚙️</Text> }}
       />
     </Tab.Navigator>

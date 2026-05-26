@@ -16,3 +16,10 @@ export type TodayStackParamList = {
 export type TodayScreenProps = NativeStackScreenProps<TodayStackParamList, 'TodayScreen'>;
 export type AddHabitScreenProps = NativeStackScreenProps<TodayStackParamList, 'AddHabit'>;
 export type HabitDetailScreenProps = NativeStackScreenProps<TodayStackParamList, 'HabitDetail'>;
+
+export type SettingsStackParamList = {
+  SettingsScreen: undefined;
+  HowItWorks: undefined;
+};
+
+export type SettingsScreenProps = NativeStackScreenProps<SettingsStackParamList, 'SettingsScreen'>;
