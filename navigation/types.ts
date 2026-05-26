@@ -10,7 +10,9 @@ export type TabParamList = {
 export type TodayStackParamList = {
   TodayScreen: undefined;
   AddHabit: { habitId?: string };
+  HabitDetail: { habitId: string };
 };
 
 export type TodayScreenProps = NativeStackScreenProps<TodayStackParamList, 'TodayScreen'>;
 export type AddHabitScreenProps = NativeStackScreenProps<TodayStackParamList, 'AddHabit'>;
+export type HabitDetailScreenProps = NativeStackScreenProps<TodayStackParamList, 'HabitDetail'>;

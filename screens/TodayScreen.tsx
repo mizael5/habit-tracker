@@ -1,11 +1,14 @@
-import React, { useRef } from 'react';
+// screens/TodayScreen.tsx
+import React, { useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import { HabitList } from '../components/HabitList';
+import { RewardOverlay } from '../components/RewardOverlay';
 import { useHabits } from '../hooks/useHabits';
 import { useReward } from '../hooks/useReward';
 import { TodayScreenProps } from '../navigation/types';
+import { Habit } from '../types';
 
 const { width } = Dimensions.get('window');
 
@@ -13,27 +16,38 @@ export function TodayScreen({ navigation }: TodayScreenProps) {
   const { habits, toggleHabit, incrementVolume } = useHabits();
   const { triggerReward, triggerLightTap } = useReward();
   const confettiRef = useRef<ConfettiCannon>(null);
+  const [challengeHabit, setChallengeHabit] = useState<Habit | null>(null);
 
   const handleToggle = (id: string) => {
-    const completed = toggleHabit(id);
+    const { completed, challengeComplete } = toggleHabit(id);
     if (completed) {
       triggerReward();
-      confettiRef.current?.start();
+      if (challengeComplete) {
+        const habit = habits.find((h) => h.id === id);
+        if (habit) setChallengeHabit(habit);
+      } else {
+        confettiRef.current?.start();
+      }
     }
   };
 
   const handleIncrement = (id: string) => {
-    const completed = incrementVolume(id);
+    const { completed, challengeComplete } = incrementVolume(id);
     if (completed) {
       triggerReward();
-      confettiRef.current?.start();
+      if (challengeComplete) {
+        const habit = habits.find((h) => h.id === id);
+        if (habit) setChallengeHabit(habit);
+      } else {
+        confettiRef.current?.start();
+      }
     } else {
       triggerLightTap();
     }
   };
 
   const handlePress = (id: string) => {
-    navigation.navigate('AddHabit', { habitId: id });
+    navigation.navigate('HabitDetail', { habitId: id });
   };
 
   return (
@@ -59,6 +73,12 @@ export function TodayScreen({ navigation }: TodayScreenProps) {
         origin={{ x: width / 2, y: -10 }}
         autoStart={false}
         fadeOut
+      />
+      <RewardOverlay
+        visible={challengeHabit !== null}
+        habitName={challengeHabit?.name ?? ''}
+        days={challengeHabit?.challengeGoal ?? 0}
+        onDismiss={() => setChallengeHabit(null)}
       />
     </View>
   );
