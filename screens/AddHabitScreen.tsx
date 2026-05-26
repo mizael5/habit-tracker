@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity,
   ScrollView, StyleSheet, Alert
@@ -19,17 +19,6 @@ export function AddHabitScreen({ route, navigation }: AddHabitScreenProps) {
   const [type, setType] = useState<HabitType>(existing?.type ?? 'binary');
   const [targetCount, setTargetCount] = useState(String(existing?.targetCount ?? 3));
 
-  useLayoutEffect(() => {
-    if (existing) {
-      navigation.setOptions({
-        headerRight: () => (
-          <TouchableOpacity onPress={handleDelete}>
-            <Text style={{ color: '#ef4444', fontSize: 15 }}>Delete</Text>
-          </TouchableOpacity>
-        ),
-      });
-    }
-  }, [existing]);
 
   const handleDelete = () => {
     Alert.alert('Delete Habit', 'This will remove all history. Continue?', [
@@ -123,6 +112,12 @@ export function AddHabitScreen({ route, navigation }: AddHabitScreenProps) {
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.saveButtonText}>{existing ? 'Save Changes' : 'Add Habit'}</Text>
       </TouchableOpacity>
+
+      {existing && (
+        <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+          <Text style={styles.deleteButtonText}>Delete Habit</Text>
+        </TouchableOpacity>
+      )}
     </ScrollView>
   );
 }
@@ -144,4 +139,6 @@ const styles = StyleSheet.create({
   typeBtnTextActive: { color: '#6366f1' },
   saveButton: { backgroundColor: '#6366f1', borderRadius: 14, paddingVertical: 16, alignItems: 'center', marginTop: 32 },
   saveButtonText: { color: '#fff', fontSize: 17, fontWeight: '700' },
+  deleteButton: { borderWidth: 1.5, borderColor: '#ef4444', borderRadius: 14, paddingVertical: 14, alignItems: 'center', marginTop: 12 },
+  deleteButtonText: { color: '#ef4444', fontSize: 16, fontWeight: '600' },
 });

@@ -15,23 +15,33 @@ export function TabNavigator() {
         headerShown: false,
         tabBarActiveTintColor: '#6366f1',
         tabBarInactiveTintColor: '#9ca3af',
-        tabBarStyle: { paddingBottom: 4 },
+        tabBarStyle: { paddingBottom: 8, height: 62 },
+        tabBarLabelStyle: { fontSize: 11, fontWeight: '600', marginTop: 2 },
       }}
     >
       <Tab.Screen
         name="Today"
         component={TodayStack}
-        options={{ tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 20 }}>📋</Text> }}
+        options={{
+          tabBarLabel: 'Today',
+          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 20 }}>📋</Text>,
+        }}
       />
       <Tab.Screen
         name="Progress"
         component={ProgressScreen}
-        options={{ tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 20 }}>📊</Text> }}
+        options={{
+          tabBarLabel: 'Progress',
+          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 20 }}>📊</Text>,
+        }}
       />
       <Tab.Screen
         name="Settings"
         component={SettingsStack}
-        options={{ tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 20 }}>⚙️</Text> }}
+        options={{
+          tabBarLabel: 'Settings',
+          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 20 }}>⚙️</Text>,
+        }}
       />
     </Tab.Navigator>
   );

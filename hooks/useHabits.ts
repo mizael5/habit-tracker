@@ -171,5 +171,40 @@ export function useHabits() {
     save(updated);
   };
 
-  return { habits, addHabit, editHabit, deleteHabit, toggleHabit, incrementVolume, setChallengeGoal, clearChallenge };
+  // Dev-only: fills in the last (challengeGoal - 1) days so the next toggle fires challenge completion
+  const devSetupChallengeCompletion = (id: string) => {
+    const updated = habits.map((h) => {
+      if (h.id !== id || !h.challengeGoal) return h;
+      const daysNeeded = h.challengeGoal - 1;
+      const dates: string[] = [];
+      for (let i = daysNeeded; i >= 1; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        dates.push(d.toISOString().split('T')[0]);
+      }
+      // Merge with existing completedDates, remove today so the next tap triggers completion
+      const todayStr = new Date().toISOString().split('T')[0];
+      const merged = Array.from(new Set([
+        ...h.completedDates.filter((d) => d !== todayStr),
+        ...dates,
+      ]));
+      return { ...h, completedDates: merged, streak: calculateStreak(merged) };
+    });
+    save(updated);
+  };
+
+  // Dev-only: clears today's completion so the celebration can be re-triggered
+  const devClearToday = (id: string) => {
+    const todayStr = new Date().toISOString().split('T')[0];
+    const updated = habits.map((h) => {
+      if (h.id !== id) return h;
+      const completedDates = h.completedDates.filter((d) => d !== todayStr);
+      const volumeLog = { ...h.volumeLog };
+      delete volumeLog[todayStr];
+      return { ...h, completedDates, volumeLog, streak: calculateStreak(completedDates) };
+    });
+    save(updated);
+  };
+
+  return { habits, addHabit, editHabit, deleteHabit, toggleHabit, incrementVolume, setChallengeGoal, clearChallenge, devSetupChallengeCompletion, devClearToday };
 }

@@ -1,5 +1,6 @@
 // screens/SettingsScreen.tsx
 import React, { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   View, Text, Switch, TouchableOpacity,
   ScrollView, StyleSheet, Platform, Alert,
@@ -24,7 +25,7 @@ function dateToTimeStr(d: Date): string {
 }
 
 export function SettingsScreen({ navigation }: SettingsScreenProps) {
-  const { habits } = useHabits();
+  const { habits, devSetupChallengeCompletion, devClearToday } = useHabits();
   const [prefs, setPrefs] = useState<NotificationPrefs>(DEFAULT_PREFS);
   const [showPicker, setShowPicker] = useState<'morning' | 'evening' | null>(null);
 
@@ -141,6 +142,51 @@ export function SettingsScreen({ navigation }: SettingsScreenProps) {
         <Text style={styles.linkText}>How It Works</Text>
         <Text style={styles.chevron}>›</Text>
       </TouchableOpacity>
+
+      <Text style={[styles.section, { marginTop: 32, color: '#f59e0b' }]}>🛠 Dev Tools</Text>
+      <Text style={styles.devHint}>
+        Simulate challenge completion: sets history so the next habit tap fires the celebration.
+      </Text>
+      {habits.length === 0 && (
+        <Text style={styles.devEmpty}>No habits yet — add one on the Today tab.</Text>
+      )}
+      {habits.map((h) => (
+        <View key={h.id} style={styles.devCard}>
+          <Text style={styles.devHabitName}>{h.emoji} {h.name}</Text>
+          <Text style={styles.devHabitMeta}>
+            Streak: {h.streak} · Challenge: {h.challengeGoal ? `${h.streak}/${h.challengeGoal}d` : 'none'}
+          </Text>
+          <View style={styles.devBtnRow}>
+            <TouchableOpacity
+              style={[styles.devBtn, !h.challengeGoal && styles.devBtnDisabled]}
+              disabled={!h.challengeGoal}
+              onPress={() => {
+                devSetupChallengeCompletion(h.id);
+                Alert.alert('Ready!', `Tap "${h.name}" on Today to trigger the ${h.challengeGoal}-day challenge celebration.`);
+              }}
+            >
+              <Text style={styles.devBtnText}>Set up for completion</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.devBtn, styles.devBtnSecondary]}
+              onPress={() => devClearToday(h.id)}
+            >
+              <Text style={[styles.devBtnText, { color: '#6b7280' }]}>Clear today</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ))}
+      <TouchableOpacity
+        style={[styles.devBtn, { marginTop: 12, alignSelf: 'stretch' }]}
+        onPress={() => {
+          Alert.alert('Reset Onboarding', 'This will show the onboarding screens on next launch.', [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Reset', style: 'destructive', onPress: () => AsyncStorage.removeItem('onboarded') },
+          ]);
+        }}
+      >
+        <Text style={styles.devBtnText}>Reset onboarding flag</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -160,4 +206,14 @@ const styles = StyleSheet.create({
   linkRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 12, padding: 16, shadowColor: '#000', shadowOpacity: 0.03, shadowRadius: 3, elevation: 1 },
   linkText: { flex: 1, fontSize: 16, color: '#111827' },
   chevron: { fontSize: 20, color: '#9ca3af' },
+  devHint: { fontSize: 13, color: '#9ca3af', marginBottom: 12, lineHeight: 18 },
+  devEmpty: { fontSize: 14, color: '#9ca3af', fontStyle: 'italic' },
+  devCard: { backgroundColor: '#fff', borderRadius: 12, padding: 14, marginBottom: 10, borderWidth: 1.5, borderColor: '#fde68a' },
+  devHabitName: { fontSize: 15, fontWeight: '700', color: '#111827', marginBottom: 2 },
+  devHabitMeta: { fontSize: 12, color: '#9ca3af', marginBottom: 10 },
+  devBtnRow: { flexDirection: 'row', gap: 8 },
+  devBtn: { flex: 1, backgroundColor: '#fef3c7', borderRadius: 8, paddingVertical: 8, alignItems: 'center' },
+  devBtnSecondary: { backgroundColor: '#f3f4f6' },
+  devBtnDisabled: { opacity: 0.4 },
+  devBtnText: { fontSize: 13, fontWeight: '600', color: '#92400e' },
 });
