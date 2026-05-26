@@ -1,7 +1,8 @@
 // screens/TodayScreen.tsx
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { useFocusEffect } from '@react-navigation/native';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import { HabitList } from '../components/HabitList';
 import { RewardOverlay } from '../components/RewardOverlay';
@@ -13,7 +14,8 @@ import { Habit } from '../types';
 const { width } = Dimensions.get('window');
 
 export function TodayScreen({ navigation }: TodayScreenProps) {
-  const { habits, toggleHabit, incrementVolume } = useHabits();
+  const { habits, toggleHabit, incrementVolume, reload } = useHabits();
+  useFocusEffect(useCallback(() => { reload(); }, []));
   const { triggerReward, triggerLightTap } = useReward();
   const confettiRef = useRef<ConfettiCannon>(null);
   const [challengeHabit, setChallengeHabit] = useState<Habit | null>(null);

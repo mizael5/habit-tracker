@@ -1,6 +1,7 @@
 // screens/ProgressScreen.tsx
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { useHabits } from '../hooks/useHabits';
 
 const { width } = Dimensions.get('window');
@@ -16,7 +17,8 @@ function getLast30Days(): string[] {
 }
 
 export function ProgressScreen() {
-  const { habits } = useHabits();
+  const { habits, reload } = useHabits();
+  useFocusEffect(useCallback(() => { reload(); }, []));
   const last30 = getLast30Days();
 
   // Per-day completion rate (0–1) across all habits

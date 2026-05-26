@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity,
-  ScrollView, StyleSheet, Alert
+  ScrollView, StyleSheet,
 } from 'react-native';
 import { useHabits } from '../hooks/useHabits';
 import { HabitType } from '../types';
@@ -30,13 +30,8 @@ export function AddHabitScreen({ route, navigation }: AddHabitScreenProps) {
   }, [existing?.id]);
 
   const handleDelete = () => {
-    Alert.alert('Delete Habit', 'This will remove all history. Continue?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete', style: 'destructive',
-        onPress: () => { deleteHabit(habitId!); navigation.goBack(); },
-      },
-    ]);
+    deleteHabit(habitId!);
+    navigation.goBack();
   };
 
   const handleSave = () => {

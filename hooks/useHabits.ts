@@ -206,5 +206,12 @@ export function useHabits() {
     save(updated);
   };
 
-  return { habits, addHabit, editHabit, deleteHabit, toggleHabit, incrementVolume, setChallengeGoal, clearChallenge, devSetupChallengeCompletion, devClearToday };
+  const reload = () => {
+    AsyncStorage.getItem(STORAGE_KEY).then((json) => {
+      if (json) setHabits(migrateHabits(JSON.parse(json)));
+      else setHabits([]);
+    });
+  };
+
+  return { habits, addHabit, editHabit, deleteHabit, toggleHabit, incrementVolume, setChallengeGoal, clearChallenge, devSetupChallengeCompletion, devClearToday, reload };
 }

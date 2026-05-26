@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity,
-  StyleSheet, TextInput, Alert,
+  StyleSheet, TextInput,
 } from 'react-native';
 import { StreakCalendar } from '../components/StreakCalendar';
 import { useHabits } from '../hooks/useHabits';
@@ -39,10 +39,7 @@ export function HabitDetailScreen({ route, navigation }: HabitDetailScreenProps)
   };
 
   const handleClear = () => {
-    Alert.alert('Clear Challenge', 'Remove the current challenge goal?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Clear', style: 'destructive', onPress: () => clearChallenge(habitId) },
-    ]);
+    clearChallenge(habitId);
   };
 
   const recentDates = [...habit.completedDates].sort().slice(-10).reverse();
