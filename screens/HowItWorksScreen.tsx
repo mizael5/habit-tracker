@@ -6,7 +6,7 @@ type Section = { title: string; icon: string; body: string };
 
 const SECTIONS: Section[] = [
   {
-    title: 'Daily Habits',
+    title: 'Daily habits',
     icon: '✓',
     body: 'Binary habits are things you do once a day — like meditating or journaling. Tap the circle to mark it done. Undo it if you tap by mistake.',
   },

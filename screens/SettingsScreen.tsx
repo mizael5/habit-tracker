@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   View, Text, Switch, TouchableOpacity,
-  ScrollView, StyleSheet, Platform, Alert,
+  ScrollView, StyleSheet, Platform, Alert, TextInput,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
@@ -28,6 +28,7 @@ export function SettingsScreen({ navigation }: SettingsScreenProps) {
   const { habits, devSetupChallengeCompletion, devClearToday } = useHabits();
   const [prefs, setPrefs] = useState<NotificationPrefs>(DEFAULT_PREFS);
   const [showPicker, setShowPicker] = useState<'morning' | 'evening' | null>(null);
+  const [webTimeStr, setWebTimeStr] = useState('');
 
   useEffect(() => {
     loadPrefs().then(setPrefs);
@@ -85,7 +86,7 @@ export function SettingsScreen({ navigation }: SettingsScreenProps) {
         />
       </View>
       {prefs.morningEnabled && (
-        <TouchableOpacity style={styles.timeBtn} onPress={() => setShowPicker('morning')}>
+        <TouchableOpacity style={styles.timeBtn} onPress={() => { setWebTimeStr(prefs.morningTime); setShowPicker('morning'); }}>
           <Text style={styles.timeBtnText}>Change morning time ({prefs.morningTime})</Text>
         </TouchableOpacity>
       )}
@@ -102,19 +103,45 @@ export function SettingsScreen({ navigation }: SettingsScreenProps) {
         />
       </View>
       {prefs.eveningEnabled && (
-        <TouchableOpacity style={styles.timeBtn} onPress={() => setShowPicker('evening')}>
+        <TouchableOpacity style={styles.timeBtn} onPress={() => { setWebTimeStr(prefs.eveningTime); setShowPicker('evening'); }}>
           <Text style={styles.timeBtnText}>Change evening time ({prefs.eveningTime})</Text>
         </TouchableOpacity>
       )}
 
-      {showPicker && (
+      {showPicker && Platform.OS === 'web' ? (
+        <View style={styles.webPickerRow}>
+          <TextInput
+            style={styles.webTimeInput}
+            value={webTimeStr}
+            onChangeText={setWebTimeStr}
+            placeholder="HH:MM"
+            maxLength={5}
+            autoFocus
+          />
+          <TouchableOpacity
+            style={styles.webTimeSetBtn}
+            onPress={() => {
+              if (/^\d{2}:\d{2}$/.test(webTimeStr)) {
+                if (showPicker === 'morning') updatePrefs({ morningTime: webTimeStr });
+                else updatePrefs({ eveningTime: webTimeStr });
+              }
+              setShowPicker(null);
+            }}
+          >
+            <Text style={styles.webTimeSetBtnText}>Set</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.webTimeCancelBtn} onPress={() => setShowPicker(null)}>
+            <Text style={styles.webTimeCancelBtnText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      ) : showPicker ? (
         <DateTimePicker
           value={timeStrToDate(showPicker === 'morning' ? prefs.morningTime : prefs.eveningTime)}
           mode="time"
           display={Platform.OS === 'ios' ? 'spinner' : 'default'}
           onChange={handleTimeChange}
         />
-      )}
+      ) : null}
 
       <Text style={[styles.section, { marginTop: 24 }]}>Feedback</Text>
       <View style={styles.row}>
@@ -216,4 +243,10 @@ const styles = StyleSheet.create({
   devBtnSecondary: { backgroundColor: '#f3f4f6' },
   devBtnDisabled: { opacity: 0.4 },
   devBtnText: { fontSize: 13, fontWeight: '600', color: '#92400e' },
+  webPickerRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8, backgroundColor: '#f3f4f6', borderRadius: 10, padding: 10 },
+  webTimeInput: { flex: 1, backgroundColor: '#fff', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 8, fontSize: 16, borderWidth: 1, borderColor: '#e5e7eb' },
+  webTimeSetBtn: { backgroundColor: '#6366f1', borderRadius: 8, paddingHorizontal: 14, paddingVertical: 8 },
+  webTimeSetBtnText: { color: '#fff', fontWeight: '700', fontSize: 14 },
+  webTimeCancelBtn: { paddingHorizontal: 10, paddingVertical: 8 },
+  webTimeCancelBtnText: { color: '#9ca3af', fontSize: 14 },
 });
