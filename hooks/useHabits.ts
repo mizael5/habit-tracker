@@ -44,6 +44,11 @@ export function migrateHabits(raw: unknown[]): Habit[] {
   }));
 }
 
+export function isChallengeComplete(streak: number, challengeGoal: number | undefined): boolean {
+  if (challengeGoal === undefined) return false;
+  return streak >= challengeGoal;
+}
+
 export function useHabits() {
   const [habits, setHabits] = useState<Habit[]>([]);
 
@@ -94,41 +99,77 @@ export function useHabits() {
     save(habits.filter((h) => h.id !== id));
   };
 
-  const toggleHabit = (id: string): boolean => {
+  const toggleHabit = (id: string): { completed: boolean; challengeComplete: boolean } => {
     const todayStr = new Date().toISOString().split('T')[0];
-    let justCompleted = false;
+    let completed = false;
+    let challengeComplete = false;
     const updated = habits.map((h) => {
       if (h.id !== id || h.type !== 'binary') return h;
       const alreadyDone = h.completedDates.includes(todayStr);
       const completedDates = alreadyDone
         ? h.completedDates.filter((d) => d !== todayStr)
         : [...h.completedDates, todayStr];
-      if (!alreadyDone) justCompleted = true;
-      return { ...h, completedDates, streak: calculateStreak(completedDates) };
+      const newStreak = calculateStreak(completedDates);
+      // auto-clear challenge when un-toggling drops streak to 0 (spec §7)
+      const challengeCleared = alreadyDone && newStreak === 0;
+      if (!alreadyDone) {
+        completed = true;
+        if (isChallengeComplete(newStreak, h.challengeGoal)) {
+          challengeComplete = true;
+        }
+      }
+      return {
+        ...h,
+        completedDates,
+        streak: newStreak,
+        challengeGoal: challengeCleared ? undefined : h.challengeGoal,
+        challengeStartDate: challengeCleared ? undefined : h.challengeStartDate,
+      };
     });
     save(updated);
-    return justCompleted;
+    return { completed, challengeComplete };
   };
 
-  const incrementVolume = (id: string): boolean => {
+  const incrementVolume = (id: string): { completed: boolean; challengeComplete: boolean } => {
     const todayStr = new Date().toISOString().split('T')[0];
-    let justCompleted = false;
+    let completed = false;
+    let challengeComplete = false;
     const updated = habits.map((h) => {
       if (h.id !== id || h.type !== 'volume') return h;
       const prevCount = h.volumeLog[todayStr] ?? 0;
-      if (prevCount >= h.targetCount) return h; // already at target, no-op
+      if (prevCount >= h.targetCount) return h;
       const newCount = prevCount + 1;
       const volumeLog = { ...h.volumeLog, [todayStr]: newCount };
       let completedDates = h.completedDates;
       if (newCount >= h.targetCount && !h.completedDates.includes(todayStr)) {
         completedDates = [...h.completedDates, todayStr];
-        justCompleted = true;
+        completed = true;
+        const newStreak = calculateStreak(completedDates);
+        if (isChallengeComplete(newStreak, h.challengeGoal)) {
+          challengeComplete = true;
+        }
+        return { ...h, volumeLog, completedDates, streak: newStreak };
       }
       return { ...h, volumeLog, completedDates, streak: calculateStreak(completedDates) };
     });
     save(updated);
-    return justCompleted;
+    return { completed, challengeComplete };
   };
 
-  return { habits, addHabit, editHabit, deleteHabit, toggleHabit, incrementVolume };
+  const setChallengeGoal = (id: string, days: number) => {
+    const todayStr = new Date().toISOString().split('T')[0];
+    const updated = habits.map((h) =>
+      h.id !== id ? h : { ...h, challengeGoal: days, challengeStartDate: todayStr }
+    );
+    save(updated);
+  };
+
+  const clearChallenge = (id: string) => {
+    const updated = habits.map((h) =>
+      h.id !== id ? h : { ...h, challengeGoal: undefined, challengeStartDate: undefined }
+    );
+    save(updated);
+  };
+
+  return { habits, addHabit, editHabit, deleteHabit, toggleHabit, incrementVolume, setChallengeGoal, clearChallenge };
 }
