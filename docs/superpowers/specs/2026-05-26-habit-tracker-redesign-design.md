@@ -129,7 +129,7 @@ Users select the type when creating or editing a habit. Type can be changed on E
 - User picks a goal (number of consecutive days, e.g. 7, 14, 21)
 - `challengeStartDate` is set to today when the goal is saved
 - Progress displayed on Habit Detail: "Day 5 of 21"
-- If streak breaks: challenge resets (user can set a new one)
+- If streak breaks: `challengeGoal` and `challengeStartDate` are cleared from the habit; the user must set a new challenge manually
 - Completion triggers the full-screen celebration overlay (Section 5)
 - Only one active challenge per habit at a time
 
