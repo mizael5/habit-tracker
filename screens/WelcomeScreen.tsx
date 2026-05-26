@@ -48,7 +48,7 @@ export function WelcomeScreen({ navigation }: Props) {
           <Text style={styles.btnText}>Get started →</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('FirstHabit', { userName: '' })}>
+        <TouchableOpacity onPress={() => navigation.navigate('HowItWorks')}>
           <Text style={styles.skipLink}>
             Skip → <Text style={styles.skipLinkBold}>How It Works</Text>
           </Text>

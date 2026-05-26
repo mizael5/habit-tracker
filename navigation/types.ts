@@ -27,4 +27,5 @@ export type SettingsScreenProps = NativeStackScreenProps<SettingsStackParamList,
 export type OnboardingStackParamList = {
   Welcome: undefined;
   FirstHabit: { userName: string };
+  HowItWorks: undefined;
 };
