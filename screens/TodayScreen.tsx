@@ -53,12 +53,14 @@ export function TodayScreen({ navigation }: TodayScreenProps) {
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
-      <HabitList
-        habits={habits}
-        onToggle={handleToggle}
-        onIncrement={handleIncrement}
-        onPress={handlePress}
-      />
+      <View style={styles.listWrap}>
+        <HabitList
+          habits={habits}
+          onToggle={handleToggle}
+          onIncrement={handleIncrement}
+          onPress={handlePress}
+        />
+      </View>
       <View style={styles.footer}>
         <TouchableOpacity
           style={styles.addButton}
@@ -86,9 +88,9 @@ export function TodayScreen({ navigation }: TodayScreenProps) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f9fafb' },
+  listWrap: { flex: 1 },
   footer: {
-    position: 'absolute', bottom: 0, left: 0, right: 0,
-    padding: 20, paddingBottom: 36,
+    padding: 16, paddingBottom: 20,
     backgroundColor: '#f9fafb',
     borderTopWidth: 1, borderTopColor: '#e5e7eb',
   },

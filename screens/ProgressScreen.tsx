@@ -1,7 +1,6 @@
 // screens/ProgressScreen.tsx
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, Dimensions } from 'react-native';
-import { CartesianChart, Bar } from 'victory-native';
 import { useHabits } from '../hooks/useHabits';
 
 const { width } = Dimensions.get('window');
@@ -62,23 +61,22 @@ export function ProgressScreen() {
 
       <View style={styles.chartCard}>
         <Text style={styles.chartTitle}>Daily completion rate — last 30 days</Text>
-        <View style={{ height: 200, width: width - 48 }}>
-          <CartesianChart
-            data={chartData}
-            xKey="x"
-            yKeys={['y']}
-            padding={{ top: 10, bottom: 30, left: 40, right: 10 }}
-            domainPadding={{ left: 4, right: 4 }}
-          >
-            {({ points, chartBounds }) => (
-              <Bar
-                points={points.y}
-                chartBounds={chartBounds}
-                color="#6366f1"
-                roundedCorners={{ topLeft: 3, topRight: 3 }}
+        <View style={styles.chart}>
+          {chartData.map((point) => (
+            <View key={point.x} style={styles.barWrap}>
+              <View
+                style={[
+                  styles.bar,
+                  { height: Math.max(2, Math.round(point.y * 120)) },
+                ]}
               />
-            )}
-          </CartesianChart>
+            </View>
+          ))}
+        </View>
+        <View style={styles.chartAxisRow}>
+          <Text style={styles.chartAxisLabel}>{last30[0]?.slice(5)}</Text>
+          <Text style={styles.chartAxisLabel}>{last30[14]?.slice(5)}</Text>
+          <Text style={styles.chartAxisLabel}>{last30[29]?.slice(5)}</Text>
         </View>
       </View>
 
@@ -112,6 +110,11 @@ const styles = StyleSheet.create({
   statLabel: { fontSize: 11, color: '#9ca3af', textAlign: 'center', marginTop: 2 },
   chartCard: { backgroundColor: '#fff', borderRadius: 14, padding: 16, marginBottom: 16, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 4, elevation: 1 },
   chartTitle: { fontSize: 13, fontWeight: '700', color: '#6b7280', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 },
+  chart: { flexDirection: 'row', alignItems: 'flex-end', height: 120, gap: 2, marginBottom: 4 },
+  barWrap: { flex: 1, alignItems: 'center', justifyContent: 'flex-end', height: 120 },
+  bar: { width: '100%', backgroundColor: '#6366f1', borderRadius: 2, minHeight: 2 },
+  chartAxisRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 },
+  chartAxisLabel: { fontSize: 10, color: '#9ca3af' },
   logCard: { backgroundColor: '#fff', borderRadius: 14, padding: 16, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 4, elevation: 1 },
   emptyLog: { color: '#9ca3af', fontSize: 14 },
   logRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#f3f4f6' },

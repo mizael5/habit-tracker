@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity,
   ScrollView, StyleSheet, Alert
@@ -19,6 +19,15 @@ export function AddHabitScreen({ route, navigation }: AddHabitScreenProps) {
   const [type, setType] = useState<HabitType>(existing?.type ?? 'binary');
   const [targetCount, setTargetCount] = useState(String(existing?.targetCount ?? 3));
 
+  // Sync form when habits load from AsyncStorage after mount
+  useEffect(() => {
+    if (existing) {
+      setName(existing.name);
+      setEmoji(existing.emoji);
+      setType(existing.type);
+      setTargetCount(String(existing.targetCount));
+    }
+  }, [existing?.id]);
 
   const handleDelete = () => {
     Alert.alert('Delete Habit', 'This will remove all history. Continue?', [

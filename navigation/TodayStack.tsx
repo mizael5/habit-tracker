@@ -20,7 +20,6 @@ export function TodayStack() {
         component={AddHabitScreen}
         options={({ route }) => ({
           title: route.params?.habitId ? 'Edit Habit' : 'New Habit',
-          presentation: 'modal',
         })}
       />
       <Stack.Screen
